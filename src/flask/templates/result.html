@@ -181,6 +181,15 @@
 
         const slidesContainer = document.getElementById('slidesContainer');
         let currentIndex = 0;
+
+        function createEmptySlides() {
+            for (let index = 1; index < recipe_ids.length; index++) {
+                const slide = document.createElement('div');
+                slide.classList.add('slide');
+                slide.innerHTML = "";
+                slidesContainer.append(slide);
+            }
+        }
         
         function loadFirstNSlides(n) {
             const limit = Math.min(recipe_ids.length, n);
@@ -211,14 +220,10 @@
             })
             .then(result => result.text())
             .then(data => {
-                const slide = document.createElement('div');
-                slide.classList.add('slide');
+                const slide = slidesContainer.children[index];
                 slide.innerHTML = data;
-                const slideAtIndex = slidesContainer.children[index];
-                slidesContainer.insertBefore(slide, slideAtIndex);
-                if (recipe_ids[currentIndex] === id) {
-                    const currentSlide = slidesContainer.children[currentIndex];
-                    lazyLoadImage(currentSlide.querySelector('img'));
+                if (currentIndex === index) {
+                    lazyLoadImage(slide.querySelector('img'));
                 }
             });
         }
@@ -229,7 +234,7 @@
                 updateSlide();
             }
         }
-
+        // it works but the ordering can be off...
         function slideRight() {
             if (currentIndex < recipe_ids.length - 1) {
                 currentIndex++;
@@ -273,7 +278,7 @@
         function refreshPage() {
             window.location.reload();
         }
-        document.addEventListener('DOMContentLoaded', loadFirstNSlides(slide_buffer));
+        document.addEventListener('DOMContentLoaded', createEmptySlides(); loadFirstNSlides(slide_buffer));
     </script>
 </body>
 </html>
