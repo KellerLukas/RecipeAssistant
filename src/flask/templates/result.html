@@ -193,7 +193,7 @@
                 } else {
                     loadSlide(id, index);
                 }
-            })
+            });
         }
 
         function loadSlide(id, index) {
@@ -203,8 +203,8 @@
             fetch('/recipe', {
                 method: 'POST',
                 body: data,
-            });
-            .then(result => result.text());
+            })
+            .then(result => result.text())
             .then(data => {
                 const slide = document.createElement('div');
                 slide.classList.add('slide');
