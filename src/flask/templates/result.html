@@ -177,6 +177,7 @@
     <script>
         const recipe_ids = {recipe_ids};
         const slide_buffer = 3;
+        let loaded_until = 0;
 
         const slidesContainer = document.getElementById('slidesContainer');
         let currentIndex = 0;
@@ -196,6 +197,10 @@
         
 
         function loadSlide(id, index) {
+            if (index<= loaded_until) {
+                return;
+            }
+            loaded_until = Math.max(loaded_until, index);
             console.error(index);
             const data = new FormData();
             data.append("id", id);
