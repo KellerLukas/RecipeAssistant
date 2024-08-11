@@ -182,6 +182,11 @@
         const slidesContainer = document.getElementById('slidesContainer');
         let currentIndex = 0;
 
+        function processSlides() {
+            createEmptySlides();
+            loadFirstNSlides(slide_buffer);
+        }
+
         function createEmptySlides() {
             for (let index = 1; index < recipe_ids.length; index++) {
                 const slide = document.createElement('div');
@@ -278,7 +283,7 @@
         function refreshPage() {
             window.location.reload();
         }
-        document.addEventListener('DOMContentLoaded', createEmptySlides(); loadFirstNSlides(slide_buffer));
+        document.addEventListener('DOMContentLoaded', processSlides());
     </script>
 </body>
 </html>
