@@ -176,26 +176,47 @@
 
     <script>
         const recipe_ids = {recipe_ids};
+        const slide_buffer = 3;
+        let loaded_until = 0;
 
         const slidesContainer = document.getElementById('slidesContainer');
         let currentIndex = 0;
+
+        function processSlides() {
+            createEmptySlides();
+            loadFirstNSlides(slide_buffer);
+        }
+
+        function createEmptySlides() {
+            for (let index = 1; index < recipe_ids.length; index++) {
+                const slide = document.createElement('div');
+                slide.classList.add('slide');
+                slide.innerHTML = "";
+                slidesContainer.append(slide);
+            }
+        }
         
-        function loadSlides() {
-            recipe_ids.forEach((id, index) => {
-                console.error(index)
-                console.error(id)
+        function loadFirstNSlides(n) {
+            const limit = Math.min(recipe_ids.length, n);
+            for (let index = 0; index < limit; index++) {
+                const id = recipe_ids[index];
                 if (index === 0) {
                     const currentSlide = slidesContainer.children[currentIndex];
                     lazyLoadImage(currentSlide.querySelector('img'));
                 } else {
                     loadSlide(id, index);
                 }
-            })
+            }
         }
+        
+
         function loadSlide(id, index) {
-            console.error("loading")
+            if (index<= loaded_until) {
+                return;
+            }
+            loaded_until = Math.max(loaded_until, index);
             const data = new FormData();
-            data.append("id", id)
+            data.append("id", id);
 
             fetch('/recipe', {
                 method: 'POST',
@@ -203,15 +224,10 @@
             })
             .then(result => result.text())
             .then(data => {
-                const slide = document.createElement('div');
-                slide.classList.add('slide');
+                const slide = slidesContainer.children[index];
                 slide.innerHTML = data;
-                const slideAtIndex = slidesContainer.children[index];
-                console.error(slideAtIndex)
-                slidesContainer.insertBefore(slide, slideAtIndex);
-                if (recipe_ids[currentIndex] === id) {
-                    const currentSlide = slidesContainer.children[currentIndex];
-                    lazyLoadImage(currentSlide.querySelector('img'));
+                if (currentIndex === index) {
+                    lazyLoadImage(slide.querySelector('img'));
                 }
             });
         }
@@ -226,6 +242,12 @@
         function slideRight() {
             if (currentIndex < recipe_ids.length - 1) {
                 currentIndex++;
+                if (currentIndex >= loaded_until - slide_buffer + 1) {
+                    let index = currentIndex + slide_buffer - 1;
+                    if (index < recipe_ids.length) {
+                        loadSlide(recipe_ids[index], index);
+                    }
+                }
                 updateSlide();
             }
         }
@@ -253,7 +275,7 @@
         function refreshPage() {
             window.location.reload();
         }
-        document.addEventListener('DOMContentLoaded', loadSlides());
+        document.addEventListener('DOMContentLoaded', processSlides());
     </script>
 </body>
 </html>

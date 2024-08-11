@@ -1,5 +1,5 @@
 import json
-
+import time
 import logging
 from openai import OpenAI
 from langchain.prompts import (
@@ -27,12 +27,13 @@ demo_recipe ='{"vegetarian": false, "vegan": false, "glutenFree": true, "dairyFr
 class MockRecipeClient(RecipeClient):
     def search_recipes(self, recipe_name, num_of_res: int = 100) -> list[str]:
         if recipe_name.lower() == "french fries":
-            return [638939]
+            return [1,2,3,4,5,6,7,8,9,10]
         return []
     def get_recipe_details(self, recipe_id) -> dict:
-        if recipe_id == 638939:
-            return json.loads(demo_recipe)
-        return {}
+        time.sleep(2)
+        res = json.loads(demo_recipe)
+        res['title'] = str(recipe_id)
+        return res
 
         
     
