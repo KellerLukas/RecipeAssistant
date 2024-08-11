@@ -233,6 +233,7 @@
                 console.error(`math ${slidesContainer.childElementCount - slide_buffer +1}`);
                 if (currentIndex === slidesContainer.childElementCount - slide_buffer + 1) {
                     let index = currentIndex + slide_buffer - 1;
+                    console.error(`there are ${recipe_ids.length} ids`);
                     if (index < recipe_ids.length - 1) {
                         console.error(`now loading ${indent}}`);
                         loadSlide(recipe_ids[index], index);
