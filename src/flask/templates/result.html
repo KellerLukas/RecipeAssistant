@@ -245,9 +245,9 @@
                 currentIndex++;
                 console.error(`currently at ${currentIndex}`);
                 console.error(`slide buffert ${slide_buffer}`);
-                console.error(`math ${slidesContainer.childElementCount - slide_buffer +1}`);
-                console.error(`therefore ${currentIndex === slidesContainer.childElementCount - slide_buffer + 1}`);
-                if (currentIndex >= slidesContainer.childElementCount - slide_buffer + 1) {
+                console.error(`math ${loaded_until - slide_buffer +1}`);
+                console.error(`therefore ${currentIndex >= loaded_until - slide_buffer + 1}`);
+                if (currentIndex >= loaded_until - slide_buffer + 1) {
                     let index = currentIndex + slide_buffer - 1;
                     console.error(`want to load ${index}`);
                     console.error(`there are ${recipe_ids.length} ids`);
