@@ -185,9 +185,6 @@
             const limit = Math.min(recipe_ids.length, n);
             for (let index = 0; index < limit; index++) {
                 const id = recipe_ids[index];
-                console.error(index);
-                console.error(id);
-        
                 if (index === 0) {
                     const currentSlide = slidesContainer.children[currentIndex];
                     lazyLoadImage(currentSlide.querySelector('img'));
