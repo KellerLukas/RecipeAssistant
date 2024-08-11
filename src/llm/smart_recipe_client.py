@@ -31,7 +31,9 @@ class MockRecipeClient(RecipeClient):
         return []
     def get_recipe_details(self, recipe_id) -> dict:
         time.sleep(2)
-        return json.loads(demo_recipe)
+        res = json.loads(demo_recipe)
+        res['title'] =1
+        return res
 
         
     
