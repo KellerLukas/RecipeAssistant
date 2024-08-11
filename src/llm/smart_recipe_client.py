@@ -1,5 +1,5 @@
 import json
-
+import time
 import logging
 from openai import OpenAI
 from langchain.prompts import (
@@ -30,6 +30,7 @@ class MockRecipeClient(RecipeClient):
             return [1,2,3,4,5,6,7,8,9,10]
         return []
     def get_recipe_details(self, recipe_id) -> dict:
+        time.sleep(2)
         return json.loads(demo_recipe)
 
         
