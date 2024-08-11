@@ -42,7 +42,7 @@ class MockRecipeClient(RecipeClient):
 class SmartRecipeClient(APIClientBase):
     def __init__(self, openai_op_key_uuid: str = None, openai_env_var_key:str=None, spoonacular_op_key_uuid: str = None, spoonacular_env_var_key:str=None):
         super().__init__(op_key_uuid=openai_op_key_uuid, env_var_key=openai_env_var_key)
-        self.recipe_client = MockRecipeClient(op_key_uuid=spoonacular_op_key_uuid, env_var_key=spoonacular_env_var_key)
+        self.recipe_client = RecipeClient(op_key_uuid=spoonacular_op_key_uuid, env_var_key=spoonacular_env_var_key)
         self.llm = OpenAI(api_key=self._api_key)
         
     @CacheMethod
