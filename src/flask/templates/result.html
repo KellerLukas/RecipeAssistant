@@ -176,38 +176,40 @@
 
     <script>
         const recipe_ids = {recipe_ids};
+        const slide_buffer = 3;
 
         const slidesContainer = document.getElementById('slidesContainer');
         let currentIndex = 0;
         
-        function loadSlides() {
+        function loadFirstNSlides(n) {
             recipe_ids.forEach((id, index) => {
                 console.error(index)
                 console.error(id)
                 if (index === 0) {
                     const currentSlide = slidesContainer.children[currentIndex];
                     lazyLoadImage(currentSlide.querySelector('img'));
+                } elif (index >= n) {
+                    break;
                 } else {
                     loadSlide(id, index);
                 }
             })
         }
+
         function loadSlide(id, index) {
-            console.error("loading")
             const data = new FormData();
-            data.append("id", id)
+            data.append("id", id);
 
             fetch('/recipe', {
                 method: 'POST',
                 body: data,
-            })
-            .then(result => result.text())
+            });
+            .then(result => result.text());
             .then(data => {
                 const slide = document.createElement('div');
                 slide.classList.add('slide');
                 slide.innerHTML = data;
                 const slideAtIndex = slidesContainer.children[index];
-                console.error(slideAtIndex)
                 slidesContainer.insertBefore(slide, slideAtIndex);
                 if (recipe_ids[currentIndex] === id) {
                     const currentSlide = slidesContainer.children[currentIndex];
@@ -226,6 +228,10 @@
         function slideRight() {
             if (currentIndex < recipe_ids.length - 1) {
                 currentIndex++;
+                if (currentIndex === recipe_ids.length - slide_buffer) {
+                    let index = currentIndex + slide_buffer - 1;
+                    loadSlide(recipe_ids[index], index);
+                }
                 updateSlide();
             }
         }
@@ -253,7 +259,7 @@
         function refreshPage() {
             window.location.reload();
         }
-        document.addEventListener('DOMContentLoaded', loadSlides());
+        document.addEventListener('DOMContentLoaded', loadFirstNSlides(slide_buffer));
     </script>
 </body>
 </html>

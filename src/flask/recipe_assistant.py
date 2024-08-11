@@ -20,7 +20,7 @@ def index():
 def search():
     dish = request.form["dish"]
     try:
-        recipe_ids = client.search_recipes(dish=dish, num_of_res=3)
+        recipe_ids = client.search_recipes(dish=dish)
     except ConnectionError as e:
         if e.args[0] == 402:
             return "API quota exceeded."
