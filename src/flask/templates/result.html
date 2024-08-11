@@ -229,6 +229,8 @@
             if (currentIndex < recipe_ids.length - 1) {
                 currentIndex++;
                 console.error(`currently at ${currentIndex}`);
+                console.error(`slide buffert ${slide_buffer}`);
+                console.error(`math ${recipe_ids.length - slide_buffer +1}`);
                 if (currentIndex === recipe_ids.length - slide_buffer + 1) {
                     let index = currentIndex + slide_buffer - 1;
                     console.error(`now loading ${indent}}`);
