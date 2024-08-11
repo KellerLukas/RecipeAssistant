@@ -31,6 +31,8 @@ def results():
     recipe_ids = json.loads(request.form["ids"])
     content = render_template("result.html")
     content = content.replace("{recipe_ids}", json.dumps(recipe_ids))
+    if len(recipe_ids)==0:
+        return content.replace("{recipe}", "NO RESULTS FOUND")
     first_recipe = get_slide_content_for_id(recipe_ids[0])
     content = content.replace("{recipe}", first_recipe)
     return content

@@ -182,21 +182,24 @@
         let currentIndex = 0;
         
         function loadFirstNSlides(n) {
-            recipe_ids.forEach((id, index) => {
-                console.error(index)
-                console.error(id)
+            const limit = Math.min(recipe_ids.length, n);
+            for (let index = 0; index < limit; index++) {
+                const id = recipe_ids[index];
+                console.error(index);
+                console.error(id);
+        
                 if (index === 0) {
                     const currentSlide = slidesContainer.children[currentIndex];
                     lazyLoadImage(currentSlide.querySelector('img'));
-                } else if (index >= n) {
-                    return;
                 } else {
                     loadSlide(id, index);
                 }
             })
         }
+        
 
         function loadSlide(id, index) {
+            console.error(index);
             const data = new FormData();
             data.append("id", id);
 
