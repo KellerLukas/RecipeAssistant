@@ -1,0 +1,94 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    padding-top: 20vh;
+    overflow: hidden
+}
+
+h1 {
+    color: #333;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+p {
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+form {
+    width: 100%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+input[type=submit] {
+    padding: 0.5rem 1rem;
+    background-color: #dd4b3d;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    width: auto;  /* Change this to auto */
+    align-self: center;  /* Center the button within the form */
+}
+
+input[type=submit]:hover {
+    background-color: #bf5045;
+}
+
+#buttonContainer {
+    display: inline-block;
+    position: relative;
+    width: 100px; /* Width matching the button */
+    height: 40px; /* Height matching the button */
+    vertical-align: middle;
+}
+
+#loadingIcon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#loadingIcon img {
+    width: 50px; /* Adjust size */
+    height: 50px;
+}
+#loadingIcon img {
+    width: 50px; /* Adjust size */
+    height: 50px;
+}
+
+#searchButton {
+    width: 100%; /* Ensures the button fills the container */
+    height: 100%; /* Ensures the button fills the container */
+}
+

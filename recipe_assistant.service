@@ -1,0 +1,11 @@
+[Unit]
+Description=RecipeAssistant
+
+[Service] 
+Type=simple
+ExecStart=/home/pi/Git/RecipeAssistant/recipe_assistant.sh
+User=pi
+WorkingDirectory=/home/pi/Git/RecipeAssistant
+
+[Install] 
+WantedBy=multi-user.target

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Choch Assistent</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="../static/main.css"/>
+
+    <!-- Web App Icon -->
+    <link rel="icon" href="../static/img/logo_300.png" type="image/png">
+    <link rel="apple-touch-icon" href="../static/img/logo_300.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Choch Assistent">
+</head>
+
+<body>
+    <img src="../static/img/logo_300.png" alt="Logo" style="display: block; margin: 0 auto; max-width: 100px;">
+    <h1>Choch Assistent</h1>
+    <p>Was wotsch choche?</p>
+    <form action = "/result" method = "POST">
+        <input type="text" placeholder="Beschrieb es Gricht..." name ="dish" />
+
+        <div id="buttonContainer">
+            <input type="submit" value="Sueche" id="searchButton" />
+            <div id="loadingIcon" style="display: none;">
+                <img src="/static/img/loading.gif" alt="Loading..." />
+            </div>
+    </form>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('form').addEventListener('submit', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+                
+                loadingIcon.style.display = 'block';
+                searchButton.style.display = 'none';
+
+                const formData = new FormData(e.target);
+        
+                fetch('/result', {
+                    method: 'POST',
+                    body: formData,
+                })
+                .then(response => response.text()) // Expect HTML as the response
+                .then(data => {
+                    loadingIcon.style.display = 'none';
+                    // Replace the current content with the new HTML content
+                    //document.querySelector('body').innerHTML = data;
+                    document.open();
+                    document.write(data);
+                    document.close();
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+        
+        </script>        
+</body>
+
+</html>

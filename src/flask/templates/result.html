@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Web App Icon -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Choch Assistent">
+    <title>Choch Assistent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: transparent; /* Changed from #f4f4f4 to transparent */
+            overflow: hidden;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            box-sizing: border-box;
+        }
+        .carousel {
+            width: 100%; /* Ensures the carousel takes up the full width */
+            max-width: none; /* Removes the previous max-width constraint */
+            height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+            margin-top: env(safe-area-inset-top);
+            margin-bottom: env(safe-area-inset-bottom);
+            overflow: hidden;
+            position: relative;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            width: 100%;
+            height: 100%;
+        }
+        .slide {
+            min-width: 100%;
+            max-width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+            justify-content: flex-start;
+            flex-shrink: 0;
+            overflow-y: auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .slide img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .slide h2 {
+            margin: 20px 0 5px;
+            font-size: 1.5em;
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            text-align: center;
+        }
+        .slide p {
+            margin: 0;
+            padding: 10px 0;
+            color: #555;
+            line-height: 1.6;
+            font-family: 'Roboto', sans-serif;
+            text-align: left;
+        }
+        .slide ul {
+            margin: 0 0 0 20px; /* Add left margin to indent the list */
+            padding: 0;
+            list-style-type: disc;
+        }
+        
+        .slide ul li {
+            margin-bottom: 5px;
+            text-align: left;
+        }
+        .button-container {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            transform: translateY(-50%);
+            top: 50%;
+            position: absolute;
+        }
+        .slide-button {
+            background-color: rgba(0, 0, 0, 0.5);
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+            pointer-events: all;
+            font-size: 1.2em;
+            text-align: center;
+            margin: 0px 10px;
+            padding: 0.1em 0.45em;
+        }
+        .slide-button:hover {
+            background-color: rgba(0, 0, 0, 0.7);
+        }
+        .slide a{ 
+            color: inherit; 
+        }
+        .slide a:visited{
+            color:inherit;
+        }
+        .slide a:hover{
+            color:inherit;
+        }
+          /* Style for the "Add to Shopping List" button */
+        .shopping-list-button {
+            background-color: #dd4b3d; 
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            font-family: 'Roboto', sans-serif;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 0;
+            transition: background-color 0.3s ease;
+            text-align: center;
+        }
+
+        .shopping-list-button:hover {
+            background-color: #bf5045; 
+        }
+        .refresh-button {
+            position: absolute;
+            bottom: 20px; /* Adjust position as needed */
+            right: 20px; /* Adjust position as needed */
+            background-color: rgba(0, 0, 0, 0.5); 
+            color: white;
+            border: none;
+            padding: 0.5em 0.7em;
+            font-size: 1.2em;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        
+        .refresh-button:hover {
+            background-color: rgba(0, 0, 0, 0.7); /* Darker blue on hover */
+        }
+        
+        .refresh-button:active {
+            transform: scale(0.95); /* Slightly shrink button when clicked */
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="carousel">
+        <div class="slides" id="slidesContainer">
+            <!-- Slides will be injected here by JavaScript -->
+        </div>
+    </div>
+    <div class="button-container">
+        <button class="slide-button" onclick="slideLeft()">&#10094;</button>
+        <button class="slide-button" onclick="slideRight()">&#10095;</button>
+    </div>
+    <button class="refresh-button" onclick="refreshPage()">&#8634;</button>
+
+    <script>
+        const recipes = {recipes};
+
+        const slidesContainer = document.getElementById('slidesContainer');
+        let currentIndex = 0;
+
+        function loadSlides() {
+            recipes.forEach((recipe, index) => {
+                const slide = document.createElement('div');
+                slide.classList.add('slide');
+                slide.innerHTML = `
+                    <img data-src="${recipe.image}" alt="${recipe.ger_title}" class="lazy-load">
+                    <h2><a href="${recipe.sourceUrl}" target="_blank" style="text-decoration:none">${recipe.ger_title}</a></h2>
+                    <button class="shopping-list-button" onclick="addToShoppingList('${recipe.shoppinglist}')">zur IIchaufsliste</button>
+                    ${recipe.llm_summary}
+                `;
+                slidesContainer.appendChild(slide);
+                if (index === 0) {
+                    lazyLoadImage(slide.querySelector('img'));
+                }
+            });
+        }
+
+        function slideLeft() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateSlide();
+            }
+        }
+
+        function slideRight() {
+            if (currentIndex < recipes.length - 1) {
+                currentIndex++;
+                updateSlide();
+            }
+        }
+
+        function updateSlide() {
+            slidesContainer.style.transform = `translateX(${-currentIndex * 100}%)`;
+            const currentSlide = slidesContainer.children[currentIndex];
+            lazyLoadImage(currentSlide.querySelector('img'));
+        }
+
+        function lazyLoadImage(image) {
+            if (image.dataset.src) {
+                image.src = image.dataset.src;
+                delete image.dataset.src;
+            }
+        }
+
+        function addToShoppingList(shoppinglist) {
+            const shortcutUrl = `shortcuts://run-shortcut?name=recipe_assistant_add_to_shopping_list&input=${shoppinglist}`;
+            window.open(shortcutUrl);
+        }
+
+        function refreshPage() {
+            window.location.reload();
+        }
+        document.addEventListener('DOMContentLoaded', loadSlides);
+    </script>
+</body>
+</html>

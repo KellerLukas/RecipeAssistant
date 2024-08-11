@@ -1,0 +1,13 @@
+sudo cp recipe_assistant.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable recipe_assistant
+sudo systemctl start recipe_assistant
+sudo systemctl status recipe_assistant
+
+
+sudo systemctl edit recipe_assistant
+
+add lines
+[Service]
+Environment="OPENAI_API_KEY=KEY"
+Environment="SPOONACULAR_API_KEY=KEY"
