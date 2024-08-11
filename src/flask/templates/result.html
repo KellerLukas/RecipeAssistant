@@ -189,7 +189,7 @@
                     const currentSlide = slidesContainer.children[currentIndex];
                     lazyLoadImage(currentSlide.querySelector('img'));
                 } else if (index >= n) {
-                    break;
+                    return;
                 } else {
                     loadSlide(id, index);
                 }
