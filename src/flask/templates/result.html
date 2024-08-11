@@ -228,8 +228,10 @@
         function slideRight() {
             if (currentIndex < recipe_ids.length - 1) {
                 currentIndex++;
+                console.error(`currently at ${currentIndex}`);
                 if (currentIndex === recipe_ids.length - slide_buffer) {
                     let index = currentIndex + slide_buffer - 1;
+                    console.error(`now loading ${indent}}`);
                     loadSlide(recipe_ids[index], index);
                 }
                 updateSlide();
