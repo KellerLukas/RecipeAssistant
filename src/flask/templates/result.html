@@ -165,7 +165,7 @@
 <body>
     <div class="carousel">
         <div class="slides" id="slidesContainer">
-            <!-- Slides will be injected here by JavaScript -->
+            <div class="slide">{recipe}</div>
         </div>
     </div>
     <div class="button-container">
@@ -175,24 +175,43 @@
     <button class="refresh-button" onclick="refreshPage()">&#8634;</button>
 
     <script>
-        const recipes = {recipes};
+        const recipe_ids = {recipe_ids};
 
         const slidesContainer = document.getElementById('slidesContainer');
         let currentIndex = 0;
-
+        
         function loadSlides() {
-            recipes.forEach((recipe, index) => {
+            recipe_ids.forEach((id, index) => {
+                console.error(index)
+                console.error(id)
+                if (index === 0) {
+                    const currentSlide = slidesContainer.children[currentIndex];
+                    lazyLoadImage(currentSlide.querySelector('img'));
+                } else {
+                    loadSlide(id, index);
+                }
+            })
+        }
+        function loadSlide(id, index) {
+            console.error("loading")
+            const data = new FormData();
+            data.append("id", id)
+
+            fetch('/recipe', {
+                method: 'POST',
+                body: data,
+            })
+            .then(result => result.text())
+            .then(data => {
                 const slide = document.createElement('div');
                 slide.classList.add('slide');
-                slide.innerHTML = `
-                    <img data-src="${recipe.image}" alt="${recipe.ger_title}" class="lazy-load">
-                    <h2><a href="${recipe.sourceUrl}" target="_blank" style="text-decoration:none">${recipe.ger_title}</a></h2>
-                    <button class="shopping-list-button" onclick="addToShoppingList('${recipe.shoppinglist}')">zur IIchaufsliste</button>
-                    ${recipe.llm_summary}
-                `;
-                slidesContainer.appendChild(slide);
-                if (index === 0) {
-                    lazyLoadImage(slide.querySelector('img'));
+                slide.innerHTML = data;
+                const slideAtIndex = slidesContainer.children[index];
+                console.error(slideAtIndex)
+                slidesContainer.insertBefore(slide, slideAtIndex);
+                if (recipe_ids[currentIndex] === id) {
+                    const currentSlide = slidesContainer.children[currentIndex];
+                    lazyLoadImage(currentSlide.querySelector('img'));
                 }
             });
         }
@@ -205,7 +224,7 @@
         }
 
         function slideRight() {
-            if (currentIndex < recipes.length - 1) {
+            if (currentIndex < recipe_ids.length - 1) {
                 currentIndex++;
                 updateSlide();
             }
@@ -213,8 +232,10 @@
 
         function updateSlide() {
             slidesContainer.style.transform = `translateX(${-currentIndex * 100}%)`;
-            const currentSlide = slidesContainer.children[currentIndex];
-            lazyLoadImage(currentSlide.querySelector('img'));
+            if (currentIndex < recipe_ids.length) {
+                const currentSlide = slidesContainer.children[currentIndex];
+                lazyLoadImage(currentSlide.querySelector('img'));
+            }
         }
 
         function lazyLoadImage(image) {
@@ -232,7 +253,7 @@
         function refreshPage() {
             window.location.reload();
         }
-        document.addEventListener('DOMContentLoaded', loadSlides);
+        document.addEventListener('DOMContentLoaded', loadSlides());
     </script>
 </body>
 </html>

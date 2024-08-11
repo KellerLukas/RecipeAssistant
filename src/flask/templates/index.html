@@ -37,24 +37,33 @@
                 searchButton.style.display = 'none';
 
                 const formData = new FormData(e.target);
-        
-                fetch('/result', {
+                
+                fetch('/search', {
                     method: 'POST',
                     body: formData,
                 })
-                .then(response => response.text()) // Expect HTML as the response
-                .then(data => {
-                    loadingIcon.style.display = 'none';
-                    // Replace the current content with the new HTML content
-                    //document.querySelector('body').innerHTML = data;
-                    document.open();
-                    document.write(data);
-                    document.close();
+                .then(response => response.text())
+                .then(result => {
+                    const data = new FormData();
+                    data.append("ids", result)
+                    fetch('/results', {
+                        method: 'POST',
+                        body: data,
+                    })
+                    .then(response => response.text()) // Expect HTML as the response
+                    .then(result_content => {
+                        loadingIcon.style.display = 'none';
+                        // Replace the current content with the new HTML content
+                        //document.querySelector('body').innerHTML = data;
+                        
+                        document.open();
+                        document.write(result_content);
+                        document.close();
+                    })
                 })
                 .catch(error => console.error('Error:', error));
             });
         });
-        
         </script>        
 </body>
 

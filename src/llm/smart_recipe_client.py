@@ -7,7 +7,7 @@ from langchain.prompts import (
 )
 
 from src.api.api_client_base import APIClientBase
-from src.api.recipe_client import CachedRecipeClient, RecipeClient
+from src.api.recipe_client import RecipeClient
 from src.llm.prompts.recipe_search_prompt import (
     recipe_search_prompt_template,
     recipe_search_question_template,
@@ -17,6 +17,7 @@ from src.llm.prompts.recipe_summary_prompt import (recipe_summary_prompt_templat
     recipe_summary_question_template)
 from src.llm.prompts.recipe_translation_prompt import (recipe_translation_prompt_template,
     recipe_translation_question_template)
+from src.api.cache_method import CacheMethod
 
 MAX_ATTEMPTS = 10
 TOOL_TIMEOUT = 20
@@ -40,11 +41,10 @@ class MockRecipeClient(RecipeClient):
 class SmartRecipeClient(APIClientBase):
     def __init__(self, openai_op_key_uuid: str = None, openai_env_var_key:str=None, spoonacular_op_key_uuid: str = None, spoonacular_env_var_key:str=None):
         super().__init__(op_key_uuid=openai_op_key_uuid, env_var_key=openai_env_var_key)
-        self.recipe_client = CachedRecipeClient(op_key_uuid=spoonacular_op_key_uuid, env_var_key=spoonacular_env_var_key)
+        self.recipe_client = RecipeClient(op_key_uuid=spoonacular_op_key_uuid, env_var_key=spoonacular_env_var_key)
         self.llm = OpenAI(api_key=self._api_key)
-
-    
         
+    @CacheMethod
     def _get_api_input(self, dish: str, prev_inputs: list[str]=[]):
         addon = ""
         n_iter = len(prev_inputs)
@@ -62,6 +62,7 @@ class SmartRecipeClient(APIClientBase):
         content = response.choices[0].message.content
         return content
 
+    @CacheMethod
     def search_recipes(self, dish: str, num_of_res: int = None):
         prev_inputs = []
         while len(prev_inputs) <= MAX_ATTEMPTS:
@@ -74,9 +75,11 @@ class SmartRecipeClient(APIClientBase):
             prev_inputs.append(api_input)
         return []
 
+    @CacheMethod
     def get_recipe_details(self, recipe_id) -> dict:
         return self.recipe_client.get_recipe_details(recipe_id=recipe_id)
     
+    @CacheMethod
     def summarize_recipe(self, recipe_details: dict) -> dict:
         logging.debug(f"creating summary for recipe {recipe_details['title']}")
         response = self.llm.chat.completions.create(
@@ -107,6 +110,7 @@ class SmartRecipeClient(APIClientBase):
         content = "</li>\n<li>".join(l)
         return f"<ul><li>{content}</li></ul>"
         
+    @CacheMethod
     def translate_parts(self, parts:dict)-> dict:
         logging.debug("translating parts")
         response = self.llm.chat.completions.create(
