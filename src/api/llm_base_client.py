@@ -1,4 +1,5 @@
 import json
+from openai import OpenAI
 from src.api.api_client_base import APIClientBase
 
 
@@ -11,15 +12,15 @@ DEFAULT_MODEL_ARGS = {
 
 
 class LLMBaseClient(APIClientBase):
-    def __init__(self, prompt_template: str, model_args: dict):
+    def __init__(self, prompt_template: str, **kwargs):
         super().__init__(op_key_uuid=API_KEY_UUID)
-        self.prompt = self._get_prompt(prompt_template)
+        self.prompt = prompt_template.format(**kwargs)
         self.client = OpenAI(api_key=self._api_key)
 
-    def _get_prompt(self, prompt_template: str) -> str:
+    def _get_prompt(self, **kwargs) -> str:
         raise NotImplementedError
 
-    def get_classification(self, question: str) -> json:
+    def invoke(self, question: str) -> json:
         response = self.client.chat.completions.create(**DEFAULT_MODEL_ARGS,
             messages=[
                 {"role": "system", "content": self.prompt},
@@ -31,4 +32,3 @@ class LLMBaseClient(APIClientBase):
         )
         content = response.choices[0].message.content
         return content.replace("</Response>", "")
-a
